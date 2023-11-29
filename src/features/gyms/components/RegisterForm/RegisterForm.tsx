@@ -11,10 +11,16 @@ import AddressForm from './AddressForm';
 import Image from 'next/image';
 import { RegisterGYMDto } from '../../application/dto/RegisterGYM.dto';
 import registerGYMSchema from '../../infrastructure/validations/yup/gym-schema';
+import { AxiosApiRestClient } from '@/core/frameworks/data/datasources/rest/axios/axios-implementation';
+import { GYMRemoteDataSourceImpl } from '../../infrastructure/data/data-sources/gym-remote-data-source';
+import { GYMRepositoryImpl } from '../../infrastructure/data/repositories/gym.repository';
+import { RegisterGYMUseCase } from '../../application/usecases/register-gym-usecase';
+import { Loader } from '@/core/components/Loader';
 
 export type RegisterFormProps = {}
 
 const RegisterForm: React.FC<RegisterFormProps> = (props) => {
+
     const initialValues: RegisterGYMDto = {
         email: '',
         name: '',
@@ -41,11 +47,20 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
         }
     }
 
+    const axiosApiRestClient = new AxiosApiRestClient();
+    const gymRemoteDataSource = new GYMRemoteDataSourceImpl(axiosApiRestClient);
+    const gymRepository = new GYMRepositoryImpl(gymRemoteDataSource);
+    const registerGYMUserCase = new RegisterGYMUseCase(gymRepository);
+
+    const submitForm = async (values: RegisterGYMDto) => {
+        await registerGYMUserCase.run(values);
+    }
+
     const { currentStepIndex, step, next, prev, stepsNum } = useStepper([
-        <UserForm />,
-        <GYMForm />,
-        <BranchForm />,
-        <AddressForm />
+        <UserForm key={1} />,
+        <GYMForm key={2} />,
+        <BranchForm key={3} />,
+        <AddressForm key={4} />
     ]);
 
     return (
@@ -58,18 +73,19 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={registerGYMSchema}
-                    onSubmit={() => { }}
+                    onSubmit={submitForm}
                 >
                     {({
                         errors,
                         values,
                         handleChange,
-                        handleSubmit
+                        handleSubmit,
+                        isSubmitting
                     }) => (
                         <>
                             <Stepper
                                 steps={[
-                                    <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+                                    <span key={1} className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
                                         {
                                             errors.user === undefined || Object.keys(errors.user).length === 0 &&
                                             <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -79,18 +95,18 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
                                         <span className="me-2">1</span>
                                         Usuario
                                     </span>,
-                                    <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+                                    <span key={2} className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
                                         <span className="me-2">2</span>
                                         GYM
                                     </span>,
-                                    <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+                                    <span key={3} className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
                                         <span className="me-2">3</span>
                                         Sucursal
                                     </span>,
-                                    <>
+                                    <div key={4}>
                                         <span className="me-2">4</span>
                                         Dirección
-                                    </>
+                                    </div>
                                 ]}
                                 currentStep={currentStepIndex}
                             />
@@ -129,7 +145,12 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
                                                 className='bg-gradient text-white'
                                                 onClick={() => { }}
                                             >
-                                                Registrarse
+                                                {
+                                                    isSubmitting ?
+                                                        <Loader />
+                                                        :
+                                                        "Registrarse"
+                                                }
                                             </Button>
                                     }
                                 </div>

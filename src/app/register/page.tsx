@@ -1,11 +1,11 @@
-import RegisterForm from '@/features/gyms/components/RegisterForm/RegisterForm';
+import RegisterGYMPage from '@/features/gyms/pages/RegisterGYMPage/RegisterGYMPage';
 import React from 'react';
 
 export type RegisterProps = {}
 
 const Register: React.FC<RegisterProps> = (props) => {
     return (
-        <RegisterForm />
+        <RegisterGYMPage />
     );
 }
 

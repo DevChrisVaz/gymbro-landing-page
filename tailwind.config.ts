@@ -19,6 +19,7 @@ const config: Config = {
         '700': '#1d8f61',
         '800': '#187751',
         '900': '#135f41',
+        DEFAULT: '#27be82'
       },
       'white': '#FFFFFF',
       'light-green': '#7CD8B3',
@@ -34,9 +35,20 @@ const config: Config = {
         'primary': '#27be82',
       },
       backgroundColor: {
-        'primary': '#27be82',
+        'primary': {
+          '100': '#93dfc0',
+          '200': '#77d6b0',
+          '300': '#5ccea1',
+          '400': '#41c691',
+          '500': '#27be82',
+          '600': '#21a671',
+          '700': '#1d8f61',
+          '800': '#187751',
+          '900': '#135f41',
+          DEFAULT: '#27be82',
+        },
         'dark': '#111111',
-        'light': '#FFFFFF'
+        'light': '#FFFFFF',
       },
       backgroundImage: {
         'gradient': 'linear-gradient(135deg, #7CD8B3 0%, #26BE81 100%)'
