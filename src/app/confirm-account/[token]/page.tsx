@@ -1,15 +1,15 @@
 "use client"
 
 import axios from 'axios';
-import { useSearchParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
 function ConfirmationPage() {
 
-  const searchParams = useSearchParams();
+  const searchParams = useParams();
   const router = useRouter();
-  const token = searchParams.get("token");
+  const { token } = searchParams;
 
   const activateAccount = async () => {
     try {
