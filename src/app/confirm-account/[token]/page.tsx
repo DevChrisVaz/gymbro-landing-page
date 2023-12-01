@@ -13,7 +13,7 @@ function ConfirmationPage() {
 
   const activateAccount = async () => {
     try {
-      await axios.patch("https://gymbro-services.onrender.com/customers/verify-account/" + token)
+      await axios.patch("https://gymbro-services.onrender.com/api/customers/verify-account/" + token)
       router.replace("/");
     } catch (error) {
       console.log(error);
